@@ -1,0 +1,123 @@
+.listing-grid-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  width: 45%;
+}
+
+.filter-section label {
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.filter-section select, 
+.price-range {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.price-range {
+  display: flex;
+  align-items: center;
+}
+
+.price-range input {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.listing-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.listing-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.listing-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.listing-details {
+  padding: 15px;
+}
+
+.listing-details h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.listing-details p {
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.pricing {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+.listing-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.amenity-tag {
+  background-color: #f1f3f5;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  color: #495057;
+}
+
+.no-listings {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 50px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+  }
+
+  .filter-section {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+}
