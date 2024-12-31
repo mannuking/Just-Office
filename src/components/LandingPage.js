@@ -5,15 +5,61 @@ import './LandingPage.css';
 function LandingPage({ setIsAuthenticated }) {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    name: '',
+    role: 'user'
+  });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleAuth = (e, type) => {
+  const handleAuth = async (e, type) => {
     e.preventDefault();
-    // In a real app, you would validate credentials here
-    setIsAuthenticated(true);
-    navigate('/listings/Mumbai');
+    setError('');
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/${type}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(type === 'login' ? {
+          email: formData.email,
+          password: formData.password
+        } : formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Authentication failed');
+      }
+
+      if (type === 'login') {
+        // Store the token in localStorage
+        localStorage.setItem('token', data.data.token);
+        localStorage.setItem('userEmail', data.data.user.email);
+        localStorage.setItem('userRole', data.data.user.role);
+        localStorage.setItem('userName', data.data.user.name);
+      }
+
+      setIsAuthenticated(true);
+      // Role-based navigation
+      switch(data.data.user.role) {
+        case 'admin':
+          navigate('/admin/dashboard');
+          break;
+        case 'landlord':
+          navigate('/landlord/properties');
+          break;
+        default:
+          navigate('/listings/Mumbai');
+      }
+    } catch (err) {
+      setError(err.message);
+      console.error('Authentication error:', err);
+    }
   };
 
   return (
@@ -51,23 +97,56 @@ function LandingPage({ setIsAuthenticated }) {
             <button className="close-btn" onClick={() => {
               setShowLogin(false);
               setShowSignup(false);
+              setError('');
+              setFormData({
+                email: '',
+                password: '',
+                name: '',
+                role: 'user'
+              });
             }}>×</button>
             <h2>{showLogin ? 'Login' : 'Sign Up'}</h2>
-            <form onSubmit={(e) => handleAuth(e, showLogin ? 'login' : 'signup')}>
+            {error && <div className="error-message">{error}</div>}
+            <form onSubmit={(e) => handleAuth(e, showLogin ? 'login' : 'signup')} className="auth-form">
+              {!showLogin && (
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  required={!showLogin}
+                  className="input-field"
+                />
+              )}
               <input
                 type="email"
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
                 required
+                className="input-field"
               />
               <input
                 type="password"
                 placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
                 required
+                minLength="6"
+                className="input-field"
               />
+              {!showLogin && (
+                <select
+                  value={formData.role}
+                  onChange={(e) => setFormData({...formData, role: e.target.value})}
+                  required={!showLogin}
+                  className="input-field"
+                >
+                  <option value="user">User</option>
+                  <option value="landlord">Landlord</option>
+                  <option value="admin">Admin</option>
+                </select>
+              )}
               <button type="submit">
                 {showLogin ? 'Login' : 'Sign Up'}
               </button>
@@ -79,6 +158,7 @@ function LandingPage({ setIsAuthenticated }) {
                 onClick={() => {
                   setShowLogin(!showLogin);
                   setShowSignup(!showSignup);
+                  setError('');
                 }}
               >
                 {showLogin ? 'Sign Up' : 'Login'}
