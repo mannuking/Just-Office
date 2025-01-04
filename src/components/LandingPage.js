@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaMapMarkerAlt, FaSearch, FaChevronRight, FaStar, FaQuoteLeft } from 'react-icons/fa';
@@ -378,6 +379,8 @@ function LandingPage() {
 
 export default LandingPage;
 =======
+=======
+>>>>>>> 85483fbfc5edee2216201f767389fe1422eb9e54
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaMapMarkerAlt, FaSearch, FaChevronRight, FaStar, FaQuoteLeft } from 'react-icons/fa';
@@ -733,4 +736,7 @@ function LandingPage() {
 }
 
 export default LandingPage;
+<<<<<<< HEAD
 >>>>>>> 3c09b83 (here u go)
+=======
+>>>>>>> 85483fbfc5edee2216201f767389fe1422eb9e54

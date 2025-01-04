@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { OFFICE_LISTINGS } from '../data/officeListings';
@@ -198,6 +199,8 @@ function ListingGrid() {
 
 export default ListingGrid;
 =======
+=======
+>>>>>>> 85483fbfc5edee2216201f767389fe1422eb9e54
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { OFFICE_LISTINGS } from '../data/officeListings';
@@ -396,4 +399,7 @@ function ListingGrid() {
 }
 
 export default ListingGrid;
+<<<<<<< HEAD
 >>>>>>> 3c09b83 (here u go)
+=======
+>>>>>>> 85483fbfc5edee2216201f767389fe1422eb9e54

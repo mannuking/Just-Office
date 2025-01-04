@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 export const OFFICE_TYPES = ['Coworking Space'];
 
 export const OFFICE_LISTINGS = [
@@ -67,6 +68,8 @@ export const OFFICE_LISTINGS = [
   }
 ];
 =======
+=======
+>>>>>>> 85483fbfc5edee2216201f767389fe1422eb9e54
 export const OFFICE_TYPES = ['Coworking Space'];
 
 export const OFFICE_LISTINGS = [
@@ -134,4 +137,7 @@ export const OFFICE_LISTINGS = [
     timing: '24/7 Access'
   }
 ];
+<<<<<<< HEAD
 >>>>>>> 3c09b83 (here u go)
+=======
+>>>>>>> 85483fbfc5edee2216201f767389fe1422eb9e54
