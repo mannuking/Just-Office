@@ -1,70 +1,178 @@
-# Getting Started with Create React App
+# Just-Office
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Just-Office is a full-stack web application built with React.js frontend and Node.js/Express backend for managing office spaces and bookings.
+
+## Prerequisites
+
+Before setting up the project, ensure you have the following installed on your system:
+
+1. **Node.js and npm**
+   - Windows: Download and install from [Node.js official website](https://nodejs.org/)
+   - macOS: 
+     ```bash
+     brew install node
+     ```
+   - Linux:
+     ```bash
+     sudo apt update
+     sudo apt install nodejs npm
+     ```
+
+2. **MongoDB**
+   - Windows: Download and install [MongoDB Community Server](https://www.mongodb.com/try/download/community)
+   - macOS:
+     ```bash
+     brew tap mongodb/brew
+     brew install mongodb-community
+     ```
+   - Linux:
+     ```bash
+     sudo apt update
+     sudo apt install mongodb
+     sudo systemctl start mongodb
+     ```
+
+## Project Setup
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd just-office
+```
+
+### 2. Frontend Setup
+
+1. Install frontend dependencies:
+```bash
+npm install
+```
+
+2. Create a `.env` file in the root directory:
+```bash
+REACT_APP_API_URL=http://localhost:5000
+```
+
+### 3. Backend Setup
+
+1. Navigate to the backend directory and install dependencies:
+```bash
+cd backend
+npm install
+```
+
+2. Create a `.env` file in the backend directory:
+```bash
+PORT=5000
+MONGO_URI=mongodb://localhost:27017/just-office
+JWT_SECRET=your_jwt_secret_here
+NODE_ENV=development
+```
+
+Note: Replace `your_jwt_secret_here` with a secure random string for production use.
+
+### 4. Database Setup
+
+1. Ensure MongoDB is running:
+   - Windows: MongoDB should be running as a service
+   - macOS: `brew services start mongodb-community`
+   - Linux: `sudo systemctl start mongodb`
+
+2. The database will be automatically created when you start the backend server.
+
+## Running the Application
+
+### 1. Start the Backend Server
+
+In the backend directory:
+```bash
+# Development mode with auto-reload
+npm run dev
+
+# OR Production mode
+npm start
+```
+
+The backend server will start on http://localhost:5000
+
+### 2. Start the Frontend Development Server
+
+In the root directory:
+```bash
+npm start
+```
+
+The frontend development server will start on http://localhost:3000
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+- `npm start`: Runs the frontend in development mode
+- `npm test`: Launches the test runner
+- `npm run build`: Builds the frontend for production
+- `npm run eject`: Ejects from create-react-app
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+In the backend directory:
+- `npm run dev`: Runs the backend with nodemon for development
+- `npm start`: Runs the backend in production mode
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Project Structure
 
-### `npm test`
+```
+just-office/
+├── backend/             # Backend server files
+│   ├── config/         # Configuration files
+│   ├── models/         # Database models
+│   ├── routes/         # API routes
+│   └── server.js       # Server entry point
+├── public/             # Static files
+├── src/                # Frontend source files
+│   ├── components/     # React components
+│   ├── data/          # Static data files
+│   └── images/        # Image assets
+└── package.json        # Project dependencies
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Troubleshooting
 
-### `npm run build`
+1. **MongoDB Connection Issues**
+   - Ensure MongoDB is running on your system
+   - Check if the MONGO_URI in backend/.env is correct
+   - Verify MongoDB port is not blocked by firewall
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. **Port Conflicts**
+   - If port 3000 or 5000 is in use, modify the respective port in:
+     - Frontend: Create a `.env` file with `PORT=3001`
+     - Backend: Modify `PORT` in backend/.env
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. **Node Module Issues**
+   - Try removing node_modules and package-lock.json:
+     ```bash
+     rm -rf node_modules package-lock.json
+     npm install
+     ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Production Deployment
 
-### `npm run eject`
+For production deployment:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. Build the frontend:
+```bash
+npm run build
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. Set environment variables in production:
+   - Set NODE_ENV=production
+   - Use secure MONGO_URI
+   - Use strong JWT_SECRET
+   - Configure CORS settings in backend
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. Serve the static build files using the backend server or a CDN
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Contributing
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
