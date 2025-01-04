@@ -56,8 +56,8 @@
   background: rgba(255, 255, 255, 0.95);
   padding: 2rem;
   border-radius: 16px;
-  width: 90%;
-  max-width: 800px;
+  width: 80%;
+  max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
@@ -82,9 +82,16 @@
   right: 1rem;
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 2rem;
   cursor: pointer;
-  color: #666;
+  color: #333;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  border-radius: 50%;
   transition: color 0.3s ease;
 }
 
@@ -180,11 +187,74 @@
   transform: translateY(0);
 }
 
+.submit-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.submit-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.error-message {
+  background-color: #fff3f3;
+  color: #dc3545;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #ffcdd2;
+}
+
 .properties-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
+}
+
+.property-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-5px);
+}
+
+.property-card h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.property-details {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.property-details span {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.property-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.property-images img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
 }
 
 @media (max-width: 768px) {

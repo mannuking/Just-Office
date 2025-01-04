@@ -1,14 +1,13 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { OFFICE_LISTINGS } from '../data/officeListings';
 import { FaMapMarkerAlt, FaClock, FaSubway, FaParking, FaRegHeart } from 'react-icons/fa';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import './ListingGrid.css';
 
 function ListingGrid() {
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState('Coworking Space');
-  const [selectedCity, setSelectedCity] = useState('Delhi');
+  const [selectedProduct, setSelectedProduct] = useState('All');
+  const [selectedCity, setSelectedCity] = useState('All Cities');
   const [selectedLocation, setSelectedLocation] = useState('All Locations');
   const [hasParking, setHasParking] = useState(false);
   const [hasMetro, setHasMetro] = useState(false);
@@ -34,18 +33,71 @@ function ListingGrid() {
     ],
   }), []);
 
-  // Filter listings based on all criteria
-  const filteredListings = OFFICE_LISTINGS.filter(listing => 
-    listing.city === selectedCity &&
-    (hasParking ? listing.amenities.includes('Parking') : true) &&
-    (hasMetro ? listing.amenities.includes('Metro Connectivity') : true) &&
-    listing.monthlyRate >= priceRange[0] &&
-    listing.monthlyRate <= priceRange[1]
-  );
+  const [listings, setListings] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchListings();
+  }, []);
+
+  const fetchListings = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/listings');
+      if (!response.ok) {
+        throw new Error('Failed to fetch listings');
+      }
+      const data = await response.json();
+      
+      // Transform API data to match expected format
+      const formattedListings = data.map(listing => ({
+        id: listing._id,
+        title: listing.title,
+        type: listing.type,
+        address: listing.address,
+        city: listing.city,
+        monthlyRate: Number(listing.price),
+        images: listing.images,
+        amenities: listing.amenities || [],
+        coordinates: {
+          lat: 28.6139, // Default to Delhi coordinates for now
+          lng: 77.2090
+        }
+      }));
+      
+      setListings(formattedListings);
+    } catch (error) {
+      console.error('Error fetching listings:', error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Filter listings based on selected criteria, but don't filter if no criteria selected
+  const filteredListings = listings.filter(listing => {
+    const cityMatch = !selectedCity || selectedCity === 'All Cities' || listing.city === selectedCity;
+    const parkingMatch = !hasParking || listing.amenities.includes('Parking');
+    const metroMatch = !hasMetro || listing.amenities.includes('Metro Connectivity');
+    const priceMatch = listing.monthlyRate >= priceRange[0] && listing.monthlyRate <= priceRange[1];
+    
+    // Map frontend product types to backend types
+    const productTypeMap = {
+      'All': null,
+      'Coworking Space': 'coworking',
+      'Private Office': 'office',
+      'Meeting Room': 'meeting',
+      'Virtual Office': 'virtual'
+    };
+    const selectedBackendType = productTypeMap[selectedProduct];
+    const productMatch = !selectedBackendType || listing.type === selectedBackendType;
+    
+    return cityMatch && parkingMatch && metroMatch && priceMatch && productMatch;
+  });
 
   const resetFilters = () => {
-    setSelectedProduct('Coworking Space');
-    setSelectedCity('Delhi');
+    setSelectedProduct('All');
+    setSelectedCity('All Cities');
     setSelectedLocation('All Locations');
     setHasParking(false);
     setHasMetro(false);
@@ -63,27 +115,34 @@ function ListingGrid() {
         </Link>
         <div className="breadcrumb">
           <Link to="/">Home</Link> {' > '}
-          <Link to="/coworking">Coworking</Link> {' > '}
-          <span>Delhi</span>
+          <span>Office Spaces</span>
         </div>
       </div>
 
       {/* Page Title */}
-      <h1 className="page-title">Coworking Space In Delhi</h1>
+      <h1 className="page-title">Office Spaces</h1>
 
       {/* Quick Filters */}
       <div className="quick-filters">
         <div className="filter-group">
           <label>Product</label>
           <select value={selectedProduct} onChange={(e) => setSelectedProduct(e.target.value)}>
+            <option value="All">All Spaces</option>
             <option value="Coworking Space">Coworking Space</option>
+            <option value="Private Office">Private Office</option>
+            <option value="Meeting Room">Meeting Room</option>
+            <option value="Virtual Office">Virtual Office</option>
           </select>
         </div>
 
         <div className="filter-group">
           <label>City</label>
           <select value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)}>
+            <option value="All Cities">All Cities</option>
             <option value="Delhi">Delhi</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Hyderabad">Hyderabad</option>
           </select>
         </div>
 
@@ -139,9 +198,15 @@ function ListingGrid() {
       <div className="content-wrapper">
         <div className="main-content">
           <div className="listings-section">
-          {filteredListings.length === 0 ? (
+          {isLoading ? (
+            <div className="loading">Loading listings...</div>
+          ) : error ? (
+            <div className="error-message">
+              {error}
+            </div>
+          ) : filteredListings.length === 0 ? (
             <div className="no-listings">
-              <p>No office spaces found in {selectedCity}.</p>
+              <p>No office spaces found{selectedCity !== 'All Cities' ? ` in ${selectedCity}` : ''}.</p>
             </div>
           ) : (
             filteredListings.map(listing => (
@@ -238,7 +303,7 @@ function ListingGrid() {
           <button 
             className="connect-button"
             onClick={() => {
-              const message = encodeURIComponent("Hi Nitin, I'm interested in exploring workspace solutions in Delhi.");
+              const message = encodeURIComponent("Hi Nitin, I'm interested in exploring workspace solutions.");
               window.open(`https://wa.me/918650000096?text=${message}`, '_blank');
             }}
           >

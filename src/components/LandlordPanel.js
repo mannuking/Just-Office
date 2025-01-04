@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './LandlordPanel.css';
 
 function LandlordPanel() {
   const [showAddForm, setShowAddForm] = useState(false);
+  const [listings, setListings] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     type: 'office',
@@ -27,24 +30,89 @@ function LandlordPanel() {
     '24/7 Access'
   ];
 
+  useEffect(() => {
+    fetchListings();
+  }, []);
+
+  const fetchListings = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/listings');
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch listings');
+      }
+
+      const data = await response.json();
+      setListings(data);
+    } catch (error) {
+      console.error('Error fetching listings:', error);
+      setError(error.message);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
     try {
       const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Please log in to add a listing');
+      }
+
+      console.log('Starting form submission...');
+      const formDataToSend = new FormData();
+
+      // Append all text fields
+      Object.keys(formData).forEach(key => {
+        if (key !== 'images') {
+          if (Array.isArray(formData[key])) {
+            formData[key].forEach(value => formDataToSend.append(`${key}[]`, value));
+          } else {
+            formDataToSend.append(key, formData[key]);
+          }
+        }
+      });
+
+      // Append image files
+      if (formData.images) {
+        Array.from(formData.images).forEach(file => {
+          formDataToSend.append('images', file);
+        });
+      }
+
+      console.log('Form data prepared:', {
+        title: formData.title,
+        type: formData.type,
+        address: formData.address,
+        city: formData.city,
+        price: formData.price,
+        size: formData.size,
+        amenities: formData.amenities,
+        images: formData.images.length + ' files'
+      });
+
       const response = await fetch('http://localhost:5000/api/listings', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: formDataToSend
       });
 
+      const data = await response.json();
+      console.log('Server response:', data);
+      
       if (!response.ok) {
-        throw new Error('Failed to add listing');
+        throw new Error(data.message || data.error || 'Failed to add listing');
       }
 
+      // Fetch updated listings
+      await fetchListings();
+      
       setShowAddForm(false);
+      setError(null);
       setFormData({
         title: '',
         type: 'office',
@@ -56,9 +124,11 @@ function LandlordPanel() {
         description: '',
         images: []
       });
-      // Refresh listings
     } catch (error) {
       console.error('Error adding listing:', error);
+      setError(error.message || 'Failed to add listing. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -93,6 +163,11 @@ function LandlordPanel() {
               ×
             </button>
             <h2>Add New Property</h2>
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="property-form">
               <div className="form-group">
                 <label>Title</label>
@@ -202,8 +277,12 @@ function LandlordPanel() {
                 />
               </div>
 
-              <button type="submit" className="submit-btn">
-                Add Property
+              <button 
+                type="submit" 
+                className="submit-btn"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Adding Property...' : 'Add Property'}
               </button>
             </form>
           </div>
@@ -211,7 +290,29 @@ function LandlordPanel() {
       )}
 
       <div className="properties-grid">
-        {/* Property listings will be displayed here */}
+        {listings.map(listing => (
+          <div key={listing._id} className="property-card">
+            <h3>{listing.title}</h3>
+            <p>{listing.description}</p>
+            <div className="property-details">
+              <span>Type: {listing.type}</span>
+              <span>Price: ${listing.price}/month</span>
+              <span>Size: {listing.size} sq ft</span>
+              <span>Location: {listing.city}</span>
+            </div>
+            {listing.images && listing.images.length > 0 && (
+              <div className="property-images">
+                {listing.images.map((image, index) => (
+                  <img 
+                    key={index} 
+                    src={image} 
+                    alt={`${listing.title} - Image ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
