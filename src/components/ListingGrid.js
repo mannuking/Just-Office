@@ -118,10 +118,20 @@ function ListingGrid() {
             </div>
           ) : (
             filteredListings.map(listing => (
-              <div key={listing.id} className="listing-card">
+              <div 
+                key={listing.id} 
+                className="listing-card"
+                onClick={() => navigate(`/listing/${listing.id}`)}
+              >
                 <div className="listing-image-container">
                   <img src={listing.images[0]} alt={listing.title} className="listing-image" />
-                  <button className="favorite-button">
+                  <button 
+                    className="favorite-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // Add favorite functionality here
+                    }}
+                  >
                     <FaRegHeart />
                   </button>
                 </div>
@@ -152,7 +162,16 @@ function ListingGrid() {
                       <span className="price-amount">₹{listing.monthlyRate.toLocaleString()}</span>
                       <span className="price-period">/ desk / month</span>
                     </div>
-                    <button className="get-quote-button" onClick={() => navigate(`/listing/${listing.id}`)}>
+                    <button 
+                      className="get-quote-button" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const message = encodeURIComponent(
+                          `Hi Nitin, I'm interested in ${listing.title} at ${listing.address}. Please share more details.`
+                        );
+                        window.open(`https://wa.me/918650000096?text=${message}`, '_blank');
+                      }}
+                    >
                       Get Quote
                     </button>
                   </div>
@@ -165,19 +184,21 @@ function ListingGrid() {
         <div className="expert-profile">
           <h2>Upgrade your office with Nitin Kashyap & team</h2>
           <div className="expert-info">
-            <img src="/expert-profile.jpg" alt="Nitin Kashyap" className="expert-image" />
+            <img src="/images/expert-profile.svg" alt="Nitin Kashyap" className="expert-image" />
             <div className="expert-details">
               <h3>Nitin Kashyap</h3>
               <p className="expert-phone">+91-865*****96</p>
               <div className="expert-badge">myHQ Expert</div>
             </div>
-            <button className="contact-expert">Contact Nitin</button>
+            <button className="contact-expert" onClick={() => window.location.href='tel:+918650000096'}>
+              Contact Nitin
+            </button>
           </div>
           <p className="expert-description">
             Nitin's team assisted 200+ corporates in Delhi with customized office spaces
           </p>
           <div className="client-logos">
-            {/* Add client logos here */}
+            {/* Client logos will be added later */}
           </div>
           <div className="expert-services">
             <h4>Explore workspace solutions with our expert guidance:</h4>
@@ -188,7 +209,15 @@ function ListingGrid() {
               <li>Deal signing and move-in</li>
             </ul>
           </div>
-          <button className="connect-button">Connect with us</button>
+          <button 
+            className="connect-button"
+            onClick={() => {
+              const message = encodeURIComponent("Hi Nitin, I'm interested in exploring workspace solutions in Delhi.");
+              window.open(`https://wa.me/918650000096?text=${message}`, '_blank');
+            }}
+          >
+            Connect with us
+          </button>
         </div>
       </div>
     </div>

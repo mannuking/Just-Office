@@ -107,18 +107,27 @@
   display: flex;
   background: white;
   border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  border-radius: 8px;
   overflow: hidden;
   padding: 16px;
   gap: 20px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.listing-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .listing-image-container {
   position: relative;
-  width: 220px;
-  height: 150px;
+  width: 280px;
+  height: 180px;
   flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 .listing-image {
@@ -134,13 +143,18 @@
   background: white;
   border: none;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.favorite-button:hover {
+  transform: scale(1.1);
 }
 
 .listing-details {
@@ -173,8 +187,16 @@
 .amenity {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   color: #666;
+  background-color: #f8f9fa;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.amenity svg {
+  color: #1a73e8;
 }
 
 .space-types {
@@ -185,12 +207,12 @@
 }
 
 .space-types span {
-  padding: 2px 8px;
-  background-color: #f8f9fa;
-  border-radius: 3px;
-  font-size: 12px;
-  color: #666;
-  border: 1px solid #eee;
+  padding: 4px 12px;
+  background-color: #fff;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #1a73e8;
+  border: 1px solid #1a73e8;
 }
 
 .pricing-section {
@@ -224,24 +246,30 @@
 }
 
 .get-quote-button {
-  padding: 8px 16px;
+  padding: 10px 24px;
   background-color: #1a73e8;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.get-quote-button:hover {
+  background-color: #1557b0;
 }
 
 .expert-profile {
   background: white;
   border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  padding: 15px;
+  border-radius: 8px;
+  padding: 24px;
   position: sticky;
   top: 20px;
   height: fit-content;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .expert-profile h2 {
@@ -320,22 +348,39 @@
 }
 
 .expert-services li {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   color: #666;
   display: flex;
   align-items: center;
   gap: 8px;
+  font-size: 14px;
+  padding-left: 24px;
+  position: relative;
+}
+
+.expert-services li::before {
+  content: "•";
+  position: absolute;
+  left: 8px;
+  color: #1a73e8;
 }
 
 .connect-button {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   background-color: #1a73e8;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  margin-top: 16px;
+}
+
+.connect-button:hover {
+  background-color: #1557b0;
 }
 
 @media (max-width: 1024px) {
