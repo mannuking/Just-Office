@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaMapMarkerAlt, FaSearch, FaChevronRight, FaStar, FaQuoteLeft } from 'react-icons/fa';
