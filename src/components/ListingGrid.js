@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { OFFICE_LISTINGS } from '../data/officeListings';
 import { FaMapMarkerAlt, FaClock, FaSubway, FaParking, FaRegHeart } from 'react-icons/fa';
+import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import './ListingGrid.css';
 
 function ListingGrid() {
@@ -13,6 +14,25 @@ function ListingGrid() {
   const [hasMetro, setHasMetro] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 50000]);
   const [sortBy, setSortBy] = useState('Popularity');
+  const [selectedMarker, setSelectedMarker] = useState(null);
+
+  const mapCenter = useMemo(() => ({
+    lat: 28.6139,
+    lng: 77.2090
+  }), []);
+
+  const mapOptions = useMemo(() => ({
+    disableDefaultUI: false,
+    clickableIcons: true,
+    scrollwheel: true,
+    styles: [
+      {
+        featureType: "poi",
+        elementType: "labels",
+        stylers: [{ visibility: "on" }],
+      },
+    ],
+  }), []);
 
   // Filter listings based on all criteria
   const filteredListings = OFFICE_LISTINGS.filter(listing => 
@@ -35,11 +55,17 @@ function ListingGrid() {
 
   return (
     <div className="listing-grid-container">
-      {/* Breadcrumb Navigation */}
-      <div className="breadcrumb">
-        <Link to="/">Home</Link> {' > '}
-        <Link to="/coworking">Coworking</Link> {' > '}
-        <span>Delhi</span>
+      {/* Header */}
+      <div className="listing-header">
+        <Link to="/" className="logo-container">
+          <img src="/justofis-logo.svg" alt="JustOfis" className="logo" />
+          <span className="logo-text">JustOfis</span>
+        </Link>
+        <div className="breadcrumb">
+          <Link to="/">Home</Link> {' > '}
+          <Link to="/coworking">Coworking</Link> {' > '}
+          <span>Delhi</span>
+        </div>
       </div>
 
       {/* Page Title */}
@@ -111,7 +137,8 @@ function ListingGrid() {
       </div>
 
       <div className="content-wrapper">
-        <div className="listings-section">
+        <div className="main-content">
+          <div className="listings-section">
           {filteredListings.length === 0 ? (
             <div className="no-listings">
               <p>No office spaces found in {selectedCity}.</p>
@@ -179,9 +206,8 @@ function ListingGrid() {
               </div>
             ))
           )}
-        </div>
-
-        <div className="expert-profile">
+          </div>
+          <div className="expert-profile">
           <h2>Upgrade your office with Nitin Kashyap & team</h2>
           <div className="expert-info">
             <img src="/images/expert-profile.svg" alt="Nitin Kashyap" className="expert-image" />
@@ -218,6 +244,61 @@ function ListingGrid() {
           >
             Connect with us
           </button>
+          </div>
+        </div>
+        <div className="map-section">
+          <LoadScript 
+            googleMapsApiKey="AIzaSyDseNwG6SIghKKnFEWR36paPD_T4JDw6xM"
+            loadingElement={
+              <div className="map-loading">
+                Loading map...
+              </div>
+            }
+          >
+            <GoogleMap
+              onLoad={() => console.log('Map loaded successfully')}
+              onError={(error) => console.error('Error loading map:', error)}
+              mapContainerClassName="google-map"
+              center={mapCenter}
+              zoom={11}
+              options={mapOptions}
+            >
+              {filteredListings.map(listing => (
+                <React.Fragment key={listing.id}>
+                  <Marker
+                    position={listing.coordinates}
+                    onClick={() => setSelectedMarker(listing)}
+                    icon={{
+                      path: window.google?.maps?.SymbolPath.CIRCLE,
+                      fillColor: '#1a73e8',
+                      fillOpacity: 1,
+                      strokeColor: '#ffffff',
+                      strokeWeight: 2,
+                      scale: 8
+                    }}
+                  />
+                  {selectedMarker && selectedMarker.id === listing.id && (
+                    <InfoWindow
+                      position={listing.coordinates}
+                      onCloseClick={() => setSelectedMarker(null)}
+                    >
+                      <div className="map-info-window">
+                        <h3>{listing.title}</h3>
+                        <p>{listing.address}</p>
+                        <p className="price">₹{listing.monthlyRate.toLocaleString()} / month</p>
+                        <button 
+                          onClick={() => navigate(`/listing/${listing.id}`)}
+                          className="view-details-btn"
+                        >
+                          View Details
+                        </button>
+                      </div>
+                    </InfoWindow>
+                  )}
+                </React.Fragment>
+              ))}
+            </GoogleMap>
+          </LoadScript>
         </div>
       </div>
     </div>

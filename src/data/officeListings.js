@@ -7,6 +7,10 @@ export const OFFICE_LISTINGS = [
     type: 'Coworking Space',
     city: 'Delhi',
     address: 'Vasant Kunj, Delhi',
+    coordinates: {
+      lat: 28.5355,
+      lng: 77.1571
+    },
     monthlyRate: 10999,
     images: [
       'https://images.unsplash.com/photo-1497366216548-37526070297c',
@@ -28,6 +32,10 @@ export const OFFICE_LISTINGS = [
     type: 'Coworking Space',
     city: 'Delhi',
     address: 'Greater Kailash II, Delhi',
+    coordinates: {
+      lat: 28.5402,
+      lng: 77.2332
+    },
     monthlyRate: 12999,
     images: [
       'https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2',
@@ -49,6 +57,10 @@ export const OFFICE_LISTINGS = [
     type: 'Coworking Space',
     city: 'Delhi',
     address: 'Noida Sector 16, Delhi NCR',
+    coordinates: {
+      lat: 28.5785,
+      lng: 77.3141
+    },
     monthlyRate: 15999,
     images: [
       'https://images.unsplash.com/photo-1517502884422-41eaead166d4',
