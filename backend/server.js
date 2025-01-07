@@ -18,8 +18,17 @@ app.use(express.json());
 // Define routes for listings
 app.use('/api/listings', require('./routes/listings'));
 
+<<<<<<< HEAD
 // Define routes
 // app.use('/api/listings', require('./routes/listings'));
+=======
+// Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/listings', require('./routes/listings'));
+
+// Serve uploaded files
+app.use('/uploads', express.static('uploads'));
+>>>>>>> d36ce13f62119f069089f57109fb746dc1f53642
 
 // Start the server
 const PORT = process.env.PORT || 5001;
