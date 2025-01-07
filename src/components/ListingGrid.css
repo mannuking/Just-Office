@@ -22,7 +22,17 @@
 }
 
 .breadcrumb a:hover {
-  color: #1a73e8;
+  text-decoration: underline;
+}
+
+.home-link {
+  display: flex;
+  align-items: center;
+}
+
+.justofis-logo {
+  height: 30px;
+  margin-right: 10px;
 }
 
 .page-title {

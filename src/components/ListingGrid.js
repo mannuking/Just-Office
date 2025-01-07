@@ -1,26 +1,42 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { OFFICE_LISTINGS } from '../data/officeListings';
-import { FaMapMarkerAlt, FaClock, FaSubway, FaParking, FaRegHeart } from 'react-icons/fa';
-import './ListingGrid.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { FaMapMarkerAlt, FaClock, FaSubway, FaParking, FaRegHeart } from "react-icons/fa";
+import "./ListingGrid.css";
 
-function ListingGrid() {
+function ListingGrid({ listingsUpdated }) {
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState('Coworking Space');
-  const [selectedCity, setSelectedCity] = useState('Delhi');
-  const [selectedLocation, setSelectedLocation] = useState('All Locations');
+  const [listings, setListings] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState("Coworking Space");
+  const [selectedCity, setSelectedCity] = useState("Delhi");
+  const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const [hasParking, setHasParking] = useState(false);
   const [hasMetro, setHasMetro] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 50000]);
-  const [sortBy, setSortBy] = useState('Popularity');
+  const [sortBy, setSortBy] = useState("Popularity");
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const response = await fetch("/api/listings");
+        if (response.ok) {
+          const data = await response.json();
+          setListings(data);
+        } else {
+          console.error("Failed to fetch listings:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching listings:", error);
+      }
+    };
+
+    fetchListings();
+  }, [listingsUpdated]);
 
   // Filter listings based on all criteria
-  const filteredListings = OFFICE_LISTINGS.filter(listing => 
+// Filter listings based on all criteria except amenities
+  const filteredListings = listings.filter(listing =>
     listing.city === selectedCity &&
-    (hasParking ? listing.amenities.includes('Parking') : true) &&
-    (hasMetro ? listing.amenities.includes('Metro Connectivity') : true) &&
-    listing.monthlyRate >= priceRange[0] &&
-    listing.monthlyRate <= priceRange[1]
+    (!priceRange || (listing.monthlyRate >= priceRange[0] && listing.monthlyRate <= priceRange[1]))
   );
 
   const resetFilters = () => {
@@ -37,8 +53,10 @@ function ListingGrid() {
     <div className="listing-grid-container">
       {/* Breadcrumb Navigation */}
       <div className="breadcrumb">
-        <Link to="/">Home</Link> {' > '}
-        <Link to="/coworking">Coworking</Link> {' > '}
+        <Link to="/" className="home-link">
+          <img src="/justofis-logo.svg" alt="JustOfis Logo" className="justofis-logo" />
+        </Link>
+        <Link to="/coworking">Coworking</Link> {'>'}
         <span>Delhi</span>
       </div>
 
@@ -124,50 +142,54 @@ function ListingGrid() {
                 onClick={() => navigate(`/listing/${listing.id}`)}
               >
                 <div className="listing-image-container">
-                  <img src={listing.images[0]} alt={listing.title} className="listing-image" />
-                  <button 
-                    className="favorite-button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      // Add favorite functionality here
-                    }}
-                  >
-                    <FaRegHeart />
-                  </button>
+                    {listing.imageUrls && listing.imageUrls.length > 0 ? (
+                      <img src={listing.imageUrls[0]} alt={listing.name} className="listing-image" />
+                    ) : (
+                      <div className="no-image">No Image Available</div>
+                    )}
+                    <button
+                      className="favorite-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Add favorite functionality here
+                      }}
+                    >
+                      <FaRegHeart />
+                    </button>
                 </div>
                 <div className="listing-details">
-                  <h3>{listing.title}</h3>
+                  <h3>{listing.name}</h3>
                   <p className="location">
                     <FaMapMarkerAlt /> {listing.address}
                   </p>
-                  <p className="timing">
+                  {/* <p className="timing">
                     <FaClock /> Open Now, 08:00 to 20:00
-                  </p>
-                  <div className="amenities">
-                    {listing.amenities.includes('Metro Connectivity') && (
-                      <span className="amenity"><FaSubway /> Metro/Rail Connectivity</span>
-                    )}
-                    {listing.amenities.includes('Parking') && (
-                      <span className="amenity"><FaParking /> Parking Available</span>
-                    )}
-                  </div>
+                  </p> */}
+                  {/* <div className="amenities">
+                      {listing.amenities.includes('Metro Connectivity') && (
+                        <span className="amenity"><FaSubway /> Metro/Rail Connectivity</span>
+                      )}
+                      {listing.amenities.includes('Parking') && (
+                        <span className="amenity"><FaParking /> Parking Available</span>
+                      )}
+                    </div> */}
                   <div className="space-types">
-                    <span>Dedicated Desks</span>
-                    <span>Private Cabins</span>
-                    <span>Managed Office</span>
+                    <span>{listing.type}</span>
+                    {/* <span>Private Cabins</span>
+                    <span>Managed Office</span> */}
                   </div>
                   <div className="pricing-section">
                     <div className="price">
                       <span className="price-label">Prices starting at</span>
-                      <span className="price-amount">₹{listing.monthlyRate.toLocaleString()}</span>
+                      <span className="price-amount">₹10,000</span> {/* Placeholder for monthlyRate */}
                       <span className="price-period">/ desk / month</span>
                     </div>
-                    <button 
-                      className="get-quote-button" 
+                    <button
+                      className="get-quote-button"
                       onClick={(e) => {
                         e.stopPropagation();
                         const message = encodeURIComponent(
-                          `Hi Nitin, I'm interested in ${listing.title} at ${listing.address}. Please share more details.`
+                          `Hi, I'm interested in ${listing.name} at ${listing.address}. Please share more details.`
                         );
                         window.open(`https://wa.me/918650000096?text=${message}`, '_blank');
                       }}
@@ -182,20 +204,20 @@ function ListingGrid() {
         </div>
 
         <div className="expert-profile">
-          <h2>Upgrade your office with Nitin Kashyap & team</h2>
+          <h2>Upgrade your office with Our Experts</h2>
           <div className="expert-info">
-            <img src="/images/expert-profile.svg" alt="Nitin Kashyap" className="expert-image" />
+            <img src="/images/expert-profile.svg" alt="Expert" className="expert-image" />
             <div className="expert-details">
-              <h3>Nitin Kashyap</h3>
+              <h3>Connect with Us</h3>
               <p className="expert-phone">+91-865*****96</p>
-              <div className="expert-badge">myHQ Expert</div>
+              <div className="expert-badge">JustOfis Expert</div>
             </div>
             <button className="contact-expert" onClick={() => window.location.href='tel:+918650000096'}>
-              Contact Nitin
+              Contact Us
             </button>
           </div>
           <p className="expert-description">
-            Nitin's team assisted 200+ corporates in Delhi with customized office spaces
+            Our team has assisted 200+ corporates in Delhi with customized office spaces
           </p>
           <div className="client-logos">
             {/* Client logos will be added later */}
@@ -212,7 +234,7 @@ function ListingGrid() {
           <button 
             className="connect-button"
             onClick={() => {
-              const message = encodeURIComponent("Hi Nitin, I'm interested in exploring workspace solutions in Delhi.");
+              const message = encodeURIComponent("Hi, I'm interested in exploring workspace solutions in Delhi.");
               window.open(`https://wa.me/918650000096?text=${message}`, '_blank');
             }}
           >

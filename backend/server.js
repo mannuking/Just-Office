@@ -2,39 +2,25 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
-
-// Create Express app
 const app = express();
 
-// Connect to MongoDB
+// Enable CORS
+app.use(cors({
+  origin: 'http://localhost:3000' // Allow requests from the frontend
+}));
+
+// Connect to database
 connectDB();
 
-// Middleware
-app.use(cors());
+// Use middleware
 app.use(express.json());
 
-// Basic request logging
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    console.log('Body:', req.body);
-    next();
-});
+// Define routes for listings
+app.use('/api/listings', require('./routes/listings'));
 
-// Routes
-app.use('/api/auth', require('./routes/auth'));
+// Define routes
+// app.use('/api/listings', require('./routes/listings'));
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        success: false,
-        message: 'Server error',
-        error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
-    });
-});
-
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+// Start the server
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

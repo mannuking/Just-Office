@@ -1,16 +1,32 @@
-import { Routes, Route } from 'react-router-dom';
-import './App.css';
-import ListingGrid from './components/ListingGrid';
-import ListingDetails from './components/ListingDetails';
-import LandingPage from './components/LandingPage';
+import React, { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import "./App.css";
+import ListingGrid from "./components/ListingGrid";
+import ListingDetails from "./components/ListingDetails";
+import LandingPage from "./components/LandingPage";
 
 function App() {
-  return (
+  const [listingsUpdated, setListingsUpdated] = useState(false);
+
+  const handleListingsUpdate = () => {
+    setListingsUpdated(!listingsUpdated);
+  };
+
+return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/listings" element={<ListingGrid />} />
-        <Route path="/listings/:city" element={<ListingGrid />} />
+        <Route
+          path="/"
+          element={<LandingPage onListingsUpdate={handleListingsUpdate} />}
+        />
+        <Route
+          path="/listings"
+          element={<ListingGrid listingsUpdated={listingsUpdated} />}
+        />
+        <Route
+          path="/listings/:city"
+          element={<ListingGrid listingsUpdated={listingsUpdated} />}
+        />
         <Route path="/listing/:id" element={<ListingDetails />} />
       </Routes>
     </div>

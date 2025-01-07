@@ -5,7 +5,7 @@ import { OFFICE_LISTINGS } from '../data/officeListings';
 import './LandingPage.css';
 import newLogo from '../images/logo.png';
 
-function LandingPage() {
+function LandingPage(props) {
   const [showContactForm, setShowContactForm] = useState(false);
   const [showListingForm, setShowListingForm] = useState(false);
   const [showBot, setShowBot] = useState(false);
@@ -57,9 +57,43 @@ function LandingPage() {
     setShowContactForm(false);
   };
 
-  const handleListingSubmit = (e) => {
-    e.preventDefault();
-    // Handle listing form submission
+  const handleListingSubmit = async (event) => {
+    event.preventDefault();
+    const form = event.target;
+
+    // Placeholder for image URLs until actual image upload is implemented
+    const imageUrls = [
+      "https://images.unsplash.com/photo-1531973576160-7125cd663d86?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    ];
+
+    const formData = new FormData(form);
+    formData.append('imageUrls', JSON.stringify(imageUrls));
+    formData.append('monthlyRate', form.elements.monthlyRate.value);
+
+    // Log the form data to console
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    try {
+      const response = await fetch('http://localhost:5001/api/listings', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const newListing = await response.json();
+        console.log('New listing created:', newListing);
+        props.onListingsUpdate(); // Call the function to update the listings
+      } else {
+        console.error('Failed to create listing:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error creating listing:', error);
+    }
+
+    form.reset();
     setShowListingForm(false);
   };
 
@@ -146,9 +180,6 @@ function LandingPage() {
           <span className="company-name">JustOfis</span>
         </Link>
         <div className="nav-links">
-          <Link to="/solutions">All Solutions</Link>
-          <Link to="/office-space">Office space</Link>
-          <Link to="/more">More</Link>
         </div>
         <div className="nav-buttons">
           <button onClick={() => setShowListingForm(true)} className="list-space-btn">List your space</button>
@@ -298,10 +329,11 @@ function LandingPage() {
               </select>
               <input type="text" placeholder="City" required className="input-field" />
               <textarea placeholder="Complete Address" required className="input-field"></textarea>
-              <input type="text" placeholder="Pictures of the space (URL)" className="input-field" />
-              <input type="text" placeholder="Name" required className="input-field" />
-              <input type="tel" placeholder="Phone" required className="input-field" />
-              <input type="email" placeholder="Email" required className="input-field" />
+              <input type="file" placeholder="Pictures of the space" className="input-field" multiple name="images" />
+              <input type="number" placeholder="Monthly Rate" className="input-field" name="monthlyRate" />
+              <input type="text" placeholder="Name" required className="input-field" name="contactName" />
+              <input type="tel" placeholder="Phone" required className="input-field" name="contactPhone" />
+              <input type="email" placeholder="Email" required className="input-field" name="contactEmail" />
               <button type="submit" className="modal-submit-btn">Submit Listing</button>
             </form>
           </div>
