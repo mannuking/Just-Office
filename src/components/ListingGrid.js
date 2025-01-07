@@ -1,53 +1,11 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { FaMapMarkerAlt, FaClock, FaSubway, FaParking, FaRegHeart } from "react-icons/fa";
-import "./ListingGrid.css";
-=======
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaMapMarkerAlt, FaClock, FaSubway, FaParking, FaRegHeart } from 'react-icons/fa';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import './ListingGrid.css';
->>>>>>> d36ce13f62119f069089f57109fb746dc1f53642
 
 function ListingGrid({ listingsUpdated }) {
   const navigate = useNavigate();
-<<<<<<< HEAD
-  const [listings, setListings] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState("Coworking Space");
-  const [selectedCity, setSelectedCity] = useState("Delhi");
-  const [selectedLocation, setSelectedLocation] = useState("All Locations");
-  const [hasParking, setHasParking] = useState(false);
-  const [hasMetro, setHasMetro] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 50000]);
-  const [sortBy, setSortBy] = useState("Popularity");
-
-  useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        const response = await fetch("/api/listings");
-        if (response.ok) {
-          const data = await response.json();
-          setListings(data);
-        } else {
-          console.error("Failed to fetch listings:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error fetching listings:", error);
-      }
-    };
-
-    fetchListings();
-  }, [listingsUpdated]);
-
-  // Filter listings based on all criteria
-// Filter listings based on all criteria except amenities
-  const filteredListings = listings.filter(listing =>
-    listing.city === selectedCity &&
-    (!priceRange || (listing.monthlyRate >= priceRange[0] && listing.monthlyRate <= priceRange[1]))
-  );
-=======
   const [selectedProduct, setSelectedProduct] = useState('All');
   const [selectedCity, setSelectedCity] = useState('All Cities');
   const [selectedLocation, setSelectedLocation] = useState('All Locations');
@@ -136,7 +94,6 @@ function ListingGrid({ listingsUpdated }) {
     
     return cityMatch && parkingMatch && metroMatch && priceMatch && productMatch;
   });
->>>>>>> d36ce13f62119f069089f57109fb746dc1f53642
 
   const resetFilters = () => {
     setSelectedProduct('All');
@@ -150,15 +107,6 @@ function ListingGrid({ listingsUpdated }) {
 
   return (
     <div className="listing-grid-container">
-<<<<<<< HEAD
-      {/* Breadcrumb Navigation */}
-      <div className="breadcrumb">
-        <Link to="/" className="home-link">
-          <img src="/justofis-logo.svg" alt="JustOfis Logo" className="justofis-logo" />
-        </Link>
-        <Link to="/coworking">Coworking</Link> {'>'}
-        <span>Delhi</span>
-=======
       {/* Header */}
       <div className="listing-header">
         <Link to="/" className="logo-container">
@@ -169,7 +117,6 @@ function ListingGrid({ listingsUpdated }) {
           <Link to="/">Home</Link> {' > '}
           <span>Office Spaces</span>
         </div>
->>>>>>> d36ce13f62119f069089f57109fb746dc1f53642
       </div>
 
       {/* Page Title */}
@@ -269,8 +216,8 @@ function ListingGrid({ listingsUpdated }) {
                 onClick={() => navigate(`/listing/${listing.id}`)}
               >
                 <div className="listing-image-container">
-                    {listing.imageUrls && listing.imageUrls.length > 0 ? (
-                      <img src={listing.imageUrls[0]} alt={listing.name} className="listing-image" />
+                    {listing.images && listing.images.length > 0 ? (
+                      <img src={listing.images[0]} alt={listing.title} className="listing-image" />
                     ) : (
                       <div className="no-image">No Image Available</div>
                     )}
@@ -285,7 +232,7 @@ function ListingGrid({ listingsUpdated }) {
                     </button>
                 </div>
                 <div className="listing-details">
-                  <h3>{listing.name}</h3>
+                  <h3>{listing.title}</h3>
                   <p className="location">
                     <FaMapMarkerAlt /> {listing.address}
                   </p>
@@ -316,7 +263,7 @@ function ListingGrid({ listingsUpdated }) {
                       onClick={(e) => {
                         e.stopPropagation();
                         const message = encodeURIComponent(
-                          `Hi, I'm interested in ${listing.name} at ${listing.address}. Please share more details.`
+                          `Hi, I'm interested in ${listing.title} at ${listing.address}. Please share more details.`
                         );
                         window.open(`https://wa.me/918650000096?text=${message}`, '_blank');
                       }}
@@ -328,16 +275,10 @@ function ListingGrid({ listingsUpdated }) {
               </div>
             ))
           )}
-<<<<<<< HEAD
         </div>
-
-        <div className="expert-profile">
-          <h2>Upgrade your office with Our Experts</h2>
-=======
           </div>
           <div className="expert-profile">
           <h2>Upgrade your office with Nitin Kashyap & team</h2>
->>>>>>> d36ce13f62119f069089f57109fb746dc1f53642
           <div className="expert-info">
             <img src="/images/expert-profile.svg" alt="Expert" className="expert-image" />
             <div className="expert-details">
@@ -364,21 +305,17 @@ function ListingGrid({ listingsUpdated }) {
               <li>Deal signing and move-in</li>
             </ul>
           </div>
-          <button 
-            className="connect-button"
-            onClick={() => {
-<<<<<<< HEAD
-              const message = encodeURIComponent("Hi, I'm interested in exploring workspace solutions in Delhi.");
-=======
-              const message = encodeURIComponent("Hi Nitin, I'm interested in exploring workspace solutions.");
->>>>>>> d36ce13f62119f069089f57109fb746dc1f53642
-              window.open(`https://wa.me/918650000096?text=${message}`, '_blank');
-            }}
-          >
-            Connect with us
-          </button>
-          </div>
-        </div>
+                  <button 
+                    className="connect-button"
+                    onClick={() => {
+                      const message = encodeURIComponent("Hi Nitin, I'm interested in exploring workspace solutions.");
+                      window.open(`https://wa.me/918650000096?text=${message}`, '_blank');
+                    }}
+                  >
+                    Connect with us
+                  </button>
+                </div>
+              </div>
         <div className="map-section">
           <LoadScript 
             googleMapsApiKey="AIzaSyDseNwG6SIghKKnFEWR36paPD_T4JDw6xM"
@@ -434,7 +371,7 @@ function ListingGrid({ listingsUpdated }) {
           </LoadScript>
         </div>
       </div>
-    </div>
+    
   );
 }
 
