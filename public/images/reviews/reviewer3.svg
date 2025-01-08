@@ -1,6 +1,0 @@
-<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="60" cy="60" r="60" fill="#ea4335" opacity="0.1"/>
-  <circle cx="60" cy="45" r="20" fill="#ea4335" opacity="0.2"/>
-  <path d="M60 75C46.7452 75 36 85.7452 36 99H84C84 85.7452 73.2548 75 60 75Z" fill="#ea4335" opacity="0.2"/>
-  <text x="60" y="50" font-family="Arial" font-size="14" fill="#ea4335" text-anchor="middle">NS</text>
-</svg>
