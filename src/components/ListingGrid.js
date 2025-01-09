@@ -91,15 +91,21 @@ function ListingGrid({ listingsUpdated }) {
             amenities: Array.isArray(listing.amenities)
               ? listing.amenities
               : [],
-            coordinates: listing.coordinates || {
-              lat: 28.6139,
-              lng: 77.2090
-            }
+            coordinates:
+              listing.coordinates &&
+              typeof listing.coordinates.lat === 'number' &&
+              typeof listing.coordinates.lng === 'number'
+                ? listing.coordinates
+                : (console.warn('Invalid or missing coordinates in listing:', listing),
+                  {
+                    lat: 28.6139,
+                    lng: 77.2090
+                  })
           };
-      }).filter(Boolean); // Remove any null entries
-      
+        })
+        .filter(Boolean); // Remove any null entries
+
       setListings(formattedListings);
-      
     } catch (error) {
       console.error('Error fetching listings:', error);
       setError(error.message || 'Failed to fetch listings. Please try again later.');
@@ -360,7 +366,10 @@ function ListingGrid({ listingsUpdated }) {
             }
           >
             <GoogleMap
-              onLoad={() => console.log('Map loaded successfully')}
+              onLoad={() => {
+                console.log('Map loaded successfully');
+                console.log('window.google:', window.google);
+              }}
               onError={(error) => console.error('Error loading map:', error)}
               mapContainerClassName="google-map"
               center={mapCenter}
